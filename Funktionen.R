@@ -53,13 +53,19 @@ kennz_stet <- function(x, latex = FALSE){
 ## legt. Die Normalverteilung hat dabei den Mittelwert der Variable als
 ## mu und die Varainz/Standardabweichung als sigma^2 bzw. sigma.
 
+
+
+library(rlang)
 comp_norm <- function(y, xlab, ...){
   x <- y
   hist(y, freq = FALSE, ylab = "Dichte", xlab = xlab, main = " ", ...)
   curve(dnorm(x, mean= mean(y, na.rm = TRUE), sd= sd(y, na.rm = TRUE)), 
-        col="darkblue", lwd=2, add=TRUE, yaxt="n")
-  legend("topright", legend = paste("N (",round(mean(y), digits = 2),
-                                    ",", round(var(y), digits = 2), ")"), col = "darkblue", lty = 1, lwd = 2)
+        col="darkblue", lwd=3.5, add=TRUE, yaxt="n")
+  mea <- round(mean(y))
+  var <- round(var(y), digits = 2)
+  legend("topright", 
+         legend = expr(paste(italic(N), group( "(", list(!!mea, !!var), ")" ) ) ),
+         col = "darkblue", lty = 1, lwd = 3.5)
   
 }
 
