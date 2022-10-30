@@ -1,0 +1,166 @@
+\documentclass[12 pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{booktabs}
+\usepackage{stackrel, amssymb}
+\usepackage{csquotes}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{nicefrac}
+\usepackage{caption}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage[format = plain, justification = RaggedRight, singlelinecheck = false]{caption}
+\usepackage{color, colortbl}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{adjustbox}
+\usepackage{lscape}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[backend=bibtex,style=bwl-FU,sorting=anyvt, maxcitenames=2]{biblatex} %für Name (Jahr)
+\addbibresource{literatur.bib}
+\definecolor{Gray}{gray}{0.9}
+\usepackage{hyperref}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+	\Large
+	Technische Universität Dortmund\\
+	Fakultät Statistik\\
+	Wintersemester 2022/23\\
+	
+	\vspace{2cm}
+	
+	Fallstudien I: Projekt 2 
+	
+	\Huge
+	\textbf{Deskriptive Analyse der Demografie einer klinischen Studie}
+	
+	\Large
+	\vspace{2cm}
+	Dozenten:	\\
+	Prof. Dr. Guido Knapp\\
+	Yassine Talleb, M. Sc.
+
+
+	\vspace{2cm}
+	Verfasserin: \\
+	Julia Keiter
+	
+	\vspace{1cm}
+	Gruppe 1:\\
+	Caroline Baer\\
+	Julia Keiter \\
+	Louisa Poggel\\
+	Daniel Sipek\\
+
+    \vspace{1cm}
+    
+	17.11.2022
+	
+\end{center}
+
+\begin{normalsize}
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+\section{Einleitung}\label{K1}
+Besonders München gerät immer wieder in die Schlagzeilen, wenn von der (Un-)bezahlbarkeit von Mieten in deutschen Großstädten berichtet wird. Die Angebotsmieten in Euro pro Quadratmeter für Wohnungen in München sind seit 2012 bis zum 2. Quartal 2022 um mehr als 63 \% gestiegen \cite{statista}. Welche Kriterien bei der Mietpreisbidung berücksichtigt werden, wird als sogenannter Mietspiegel von vielen deutschen Städten abgebildet. Der Mietspiegel soll als sachliche Entscheidungshilfe dienen indem eine ortsübliche Vergleichsmiete, die nach BGB §558 insbesondere von
+\begin{quote}
+"den üblichen Entgelten, die in der Gemeinde oder einer vergleichbaren Gemeinde für Wohnraum vergleichbarer Art, Größe, Ausstattung, Beschaffenheit und Lage einschließlich der energetischen Ausstattung und Beschaffenheit in den letzten vier Jahren vereinbart oder, von Erhöhungen
+nach §560 abgesehen, geändert worden sind",
+\end{quote}
+als Orientierung gegeben wird. Inwiefern die Nettomieten von Variablen wie Art, Größe, Lage oder ähnlichem abhängig sind, soll in diesem Projekt statistisch untersucht werden. \\
+Nachdem in Kapitel \ref{K2} der Ausschnitts des Datensatzes zum Münchener Mietspiegels aus dem Jahr 2015 beschrieben hinsichtlich der Variablenverteilungen deskriptiv beschrieben wird, wird mithilfe von in Kapitel \ref{K3} vorgestellten statistischen Methoden die Variable Nettokaltmiete von 3065 zufällig ausgewählten Wohnungen aus 25 münchener Stadtbezirken in Abhängigkeit zu den übrigen Variablen gesetzt, die den Zustand der jeweiligen Wohnung beschreiben. Die Auswertung und Interpretation der Ergebnisse in Kapitel \ref{K4} ermöglicht schließlich die Zusammenfassung in Kapitel \ref{K5} und eine kurze Diskussion der Ergebnisse.
+
+\section{Problemstellung} \label{K2}
+\subsection{Datenmaterial}
+
+\begin{table}[H]
+\centering
+\caption{erhobene Variablen mit Messniveau und Ausprägungen} 
+\begin{tabular}{rrr}
+  \hline
+ Variable & Skalenniveau & Ausprägungen \\ 
+  \hline
+Nettomiete pro Monat in \textit{€}& ordinal, diskret & ${174.75,...,6000.00}$ \\ 
+  \text{Nettomiete pro Monat\\ und Quadratmeter in \textit{€}} & ordinal, diskret & ${2.47,...,22.13}$\\ 
+  Wohnfläche in \textit{$m^2$}& ordinal, diskret & ${15,...,300}$\\ 
+  Anzahl der Zimmer & ordinal, diskret & ${1,...,8}$\\ 
+  Baujahr. & ordinal, diskret & ${1918.0,...,2012.5}$\\ 
+  Bezirkname & nominal & {\text{Hadern, Laim,...}}\\
+  Gute Lage & dichotom & ${174.75,...,6000.00}$ \\ 
+  Beste Lage & dichotom & ${174.75,...,6000.00}$\\
+  Warmwasserversorgung & dichotom & ${0,1}$\\
+  Zentralheizung & dichotom & ${0,1}$\\
+  Gefliestes Bad & dichotom & ${0,1}$\\
+  Badausstattung & dichotom & ${0,1}$\\
+  Küchenausstattung & dichotom & ${0,1}$\\
+  
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{univariate Kenngrößen für metrische Variablen} 
+\begin{tabular}{rrrrr}
+  \hline
+ & Nettomiete (€) & Wohnfläche (qm) & Zimmeranzahl & Baujahr \\ 
+  \hline
+arithm. Mittel & 763.06 & 71.98 & 2.70 & 1964.21 \\ 
+  Median & 700.00 & 70.00 & 3.00 & 1957.50 \\ 
+  Minimum & 174.75 & 15.00 & 1.00 & 1918.00 \\ 
+  Maximum & 6000.00 & 300.00 & 8.00 & 2012.50 \\ 
+  Standardabw. & 338.16 & 25.74 & 0.98 & 26.51 \\ 
+  MAD & 261.90 & 22.24 & 1.48 & 27.43 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\caption{Deskriptive Kenngrößen für dichotome Variablen}
+\centering
+\begin{adjustbox}{width=\textwidth} 
+\begin{tabular}{rrrrrrrrrrrr}
+  \hline
+& Gute Lage & Beste Lage & "zent. Wasservers. & Zentralheiz. & Gefl. Bad & Badausstat. & Küchenaustat. \\ 
+  \hline
+absolute Häufigkeit "nein" & 1980.00 & 2955.00 & 3039.00 & 2861.00 & 380.00 & 2704.00 & 2298.00 \\ 
+  absolute Häufigkeit "ja" & 1085.00 & 110.00 & 26.00 & 204.00 & 2685.00 & 361.00 & 767.00 \\ 
+  relative Häufigkeit "nein" & 0.65 & 0.96 & 0.99 & 0.93 & 0.12 & 0.88 & 0.75 \\ 
+  relative Häufigkeit "ja" & 0.35 & 0.04 & 0.01 & 0.07 & 0.88 & 0.12 & 0.25 \\ 
+  Modus & nein & nein & nein & nein & ja & nein & nein \\ 
+   \hline
+\end{tabular}
+\end{adjustbox} 
+\label{Tabelle 5}
+\end{table}
+
+
+
+\newpage
+\section*{}
+\addcontentsline{toc}{section}{Literatur}
+\printbibliography
+
+\newpage
+\section*{Anhang}
+\addcontentsline{toc}{section}{Anhang}
+
+
+
+
+
+
+\end{normalsize}
+\end{document}
