@@ -93,28 +93,35 @@ In der nominal skalierten Variable \textit{Bezirk} sind die 25 Münchener Stadtb
 \begin{table}[H]
 \centering
 \caption{erhobene Variablen mit Messniveau und Ausprägungen} 
-\begin{tabular}{rrr}
+\begin{tabular}{llr}
   \hline
  Variable & Skalenniveau & Ausprägungen \\ 
   \hline
-  Nettomiete pro Monat in \EUR{} & ordinal, diskret & ${174.75,...,6000.00}$ \\ 
-  Nettomiete pro Monat in \EUR{} und $m^2$ & ordinal, diskret & ${2.47,...,22.13}$\\ 
-  Wohnfläche in $m^2$ & ordinal, diskret & ${15,...,300}$\\ 
-  Anzahl der Zimmer & ordinal, diskret & ${1,...,8}$\\ 
-  Baujahr. & ordinal, diskret & ${1918.0,...,2012.5}$\\ 
-  Bezirkname & nominal & {\text{Hadern, Laim,...}}\\
-  Gute Lage & nominal, dichotom & ${0,1}$ \\ 
-  Beste Lage & nominal, dichotom & ${0,1}$\\
-  Warmwasserversorgung & nominal, dichotom & ${0,1}$\\
-  Heizung & nominal, dichotom & ${0,1}$\\
-  Gefliestes Bad & nominal, dichotom & ${0,1}$\\
-  Bad & nominal, dichotom & ${0,1}$\\
-  Küche & nominal, dichotom & ${0,1}$\\
+  Nettomiete (pro Monat in \EUR{}) & metrisch, diskret & $\lbrace 174.75,...,6000.00\rbrace$ \\ 
+  Nettomiete (pro Monat in \EUR{} und $m^2$) & metrisch, diskret & $\lbrace 2.47,...,22.13\rbrace$\\ 
+  Wohnfläche (in $m^2$) & metrisch, diskret & $\lbrace 15,...,300\rbrace$\\ 
+  Anzahl der Zimmer & metrisch, diskret & $\lbrace 1,...,8\rbrace$\\ 
+  Baujahr & metrisch, diskret & $\lbrace 1918.0,...,2012.5\rbrace$\\ 
+  Bezirkname & nominal & $\lbrace \text{Hadern, Laim,...}\rbrace$\\
+  Gute Lage & nominal, dichotom & $\lbrace 0,1\rbrace$ \\ 
+  Beste Lage & nominal, dichotom & $\lbrace 0,1\rbrace$\\
+  Warmwasserversorgung & nominal, dichotom & $\lbrace 0,1\rbrace$\\
+  Heizung & nominal, dichotom & $\lbrace 0,1\rbrace$\\
+  Gefliestes Bad & nominal, dichotom & $\lbrace 0,1\rbrace$\\
+  Bad & nominal, dichotom & $\lbrace0,1\rbrace$\\
+  Küche & nominal, dichotom & $\lbrace0,1\rbrace$\\
    \hline
 \end{tabular}
 \label{T1}
 \end{table}
 \noindent Die Ausprägungen 0 und 1 in den nominal, dichotomen Variablen sind wie folgt zu interpretieren: Bei der Variable \textit{Gute Lage} steht 0 für eine andere Lagekategorie und 1 für eine gute Lage. Bei der Variable \textit{Beste Lage} steht 0 für eine andere Lagekategorie und 1 für eine beste Lage. Bei der Variable \textit{Warmwasserversorgung vom Vermieter gestellt}, in der Tabelle und im Folgenden mit \textit{Warmwasser} abgekürzt, steht 0 für ja und 1 für nein. Bei der Variable \textit{Zentralheizung verfügbar}, in der Tabelle und im Folgenden mit \textit{Heizung} abgekürzt, steht 0 für ja und 1 für nein. Bei der Variable \textit{Gefliestes / Gekacheltes Bad}, in der Tabelle und im Folgenden mit \textit{Fliese/Kachel} abgekürzt, steht 0 ja und 1 nein. Bei der Variable \textit{Ausstattung des Bades}, in der Tabelle und im Folgenden mit \textit{Bad} abgekürzt, steht 0 für normal und 1 für gehoben. Bei der Variable \textit{Ausstattung der Küche}, in der Tabelle und im Folgenden mit \textit{Küche} abgekürzt, steht 0 für normal und 1 für gehoben.\\
+Die Datenqualität ist aufgrund keinerlei fehlender Werte im gesamten Datensatz als sehr gut zu bewerten. 
+
+\subsection{Ziele des Projekts}
+Ziel dieses Projekts ist, ein geeignetes multiples Regressionsmodell zur Schätzung der \textit{Nettomiete} als Regressanten zu konstruieren. Da die Variable \textit{Nettomiete in $m^2$} als Quotient der Variablen \textit{Nettomiete} und \textit{Wonfläche} ein alternativer Regressant und keine unabhängige Variable ist, wird die \textit{Nettomiete in $m^2$} in der Modellbildung nicht berücksichtigt. \\
+Welche Variablen einen signifikanten Einfluss zur Modellierung des Sachverhalts haben (und damit Regressoren genannt werden), wird durch geeignete Test- und Variablenselektionsverfahren geprüft. Nachdem überprüft wird, welche Modell- und insbesondere Fehlerannahmen das finale Modell erfüllt, wird abschließend erläutert, inwiefern die Regressoren die \textit{Nettomiete} im konstruierten Modell bilden.
+
+\section{Statistische Auswertung}
 Um einen Überblick über die Verteilungen der Variablen zu erhalten, sind in Tabelle \ref{T2} und \ref{T3} univariate Kenngrößen zu den Variablen aufgeführt. 
 \begin{table}[H]
 \centering
@@ -133,11 +140,9 @@ arithm. Mittel & 763.06 & 71.98 & 2.70 & 1964.21 \\
 \end{tabular}
 \label{T2}
 \end{table}
-
 \noindent Da nah beieinanderliegende Lage- (arithmetisches Mittel vs. Median) bzw. Streuungsmaße (Standardabweichung vs. MAD) auf eine symmetrische Verteilung der Variable schließen lassen (\cite{Fahrmeir}, Seite 60), werden den metrisch skalierten Variablen vor allem diese Kenngrößen betrachtet.\\
 Das arithmetische Mittel (763 \EUR{}) und der Median (700 \EUR{}), sowie die Standardabweichung (338.16 \EUR{}) und MAD (261.9 \EUR{}) der Variable \textit{Nettomiete} unterscheiden sich. Dies lässt auf eine assymmetrische Verteilung bzw. auf den Einfluss eines Ausreißers schließen. Diese Vermutung wird in Abbildung \ref{A1} bestätigt. Um die Verzerrung durch den Einfluss des Ausreißers zu umgehen, wird die Beobachtung mit Nettomiete= 60000 aus dem Datensatz entfernt, sodass sich eine neue Stichprobengröße von n=3064 ergibt. 
 Die Lage- und Streuungsmaße für die metrischen Variablen \textit{Wohnfläche}, \textit{Zimmeranzahl} und \textit{Baujahr} unterscheiden sich nur marginal, was auf eine ausgeglichene Verteilung dieser Variablen schließen lässt.
-
 \begin{table}[H]
 \caption{Deskriptive Kenngrößen für nominal, dichotome Variablen}
 \centering
@@ -157,11 +162,6 @@ absolute Häufigkeit "0" & 1980.00 & 2955.00 & 3039.00 & 2861.00 & 380.00 & 2704
 \label{T3}
 \end{table}
 \noindent Die deskriptive Kenngrößen für die nominal, dichotomen Variablen zeigen, welche Zustände in den meisten der 3065 betrachteten Wohnungen vorliegen: 1085 Wohnungen befinden sich in einer guten, 110 in einer besten Lage. Damit befinden sich 1870 Wohnungen, das sind 61 \% der Grundgesamtheit, in einer anderen Lagekategorie. In 99 \% der Wohnungen ist die Warmwasserversorgung vom Vermieter gestellt. 93 \% der Wohnungen verfügen über eine Zentralheizung. Das Bad ist in 88 \% der Wohnungen nicht gefliest und normal ausgestattet. In 75 \% der Wohnungen ist die Küchenausstattung normal.\\
-Die Datenqualität ist aufgrund keinerlei fehlender Werte im gesamten Datensatz als sehr gut zu bewerten. 
-
-\subsection{Ziele des Projekts}
-
-
 
 \newpage
 \section*{}
