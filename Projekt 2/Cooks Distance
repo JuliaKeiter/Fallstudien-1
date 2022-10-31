@@ -1,0 +1,17 @@
+#erstellen des modells mit x = 1 bis 3065
+model <- lm(Daten.nm ~ X1.3065, data = data.frame(1:3065, Daten$nm))
+
+#cooks distance
+cooksD <- cooks.distance(model)
+n <- nrow(data.frame(1:3065, Daten$nm))
+
+#plotten der cooks distances
+plot(cooksD, main = "Cooks Distance for Influential Obs")
+abline(h = 4/n, lty = 2, col = "steelblue") # add cutoff line
+
+#punkte identifizieren die dessen cooks distance grösser 4/n sind
+influential_obs <- as.numeric(names(cooksD)[(cooksD > (4/n))])
+
+#neuer Dataframe ohne diese punkte
+#define new data frame with influential points removed
+outliers_removed <- data.frame(1:3065, Daten$nm)[-influential_obs, ]
