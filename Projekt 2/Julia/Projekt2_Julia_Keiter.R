@@ -3,6 +3,7 @@ setwd("~/Documents/Uni/6. Semester/Fallstudien/Projekt 2")
 #benötigte Pakete
 library(moments)
 library(car)
+library(xtable)
 
 #Einlesung der Daten####
 MS <- read.csv("mietspiegel2015.csv", header = T, sep=" ", quote = "\"\"",
@@ -11,9 +12,9 @@ MS <- read.csv("mietspiegel2015.csv", header = T, sep=" ", quote = "\"\"",
                              "kueche"))
 
 #Gruppe 1: Betrachtung der nm, nmqm fällt weg
-MS <- MS[,-2]
+#MS <- MS[,-2]
 
-#Strukturierung der Variablen
+'#Strukturierung der Variablen
 MS$wohngut[MS$wohngut == 1] <- "Gute Lage"
 MS$wohngut[MS$wohngut == 0] <- "andere Lagekategorie"
 
@@ -34,7 +35,7 @@ MS$badextra[MS$badextra == 0] <- "normal"
 
 MS$kueche[MS$kueche == 1] <- "gehoben"
 MS$kueche[MS$kueche == 0] <- "normal"
-
+'
 #Faktorisierung der nominalen Variablen
 MS$bez <- as.factor(MS$bez)
 MS$wohngut <- as.factor(MS$wohngut)
@@ -65,6 +66,7 @@ str(MS)
 #insgesamt
 sum(is.na(MS))
 #[1] 0
+
 
 #Betrachtung Variablenverteilung
 #metrische Variablen
@@ -164,6 +166,11 @@ $kueche
 gehoben  normal 
     767    2298'
 
+
+#Ausreißer: nm=6000 entfernen
+MS <- subset(MS, nm!=6000.00)
+
+
 #erster Blick auf mögliche Abhängigkeiten von nm zu anderen Variablen
 MS.lm <- lm(nm ~ ., data = MS) # Regressant: nm, Regressor: alle anderen Variablen
 
@@ -175,3 +182,28 @@ In scatterplotMatrix.default(X[, -ncol], groups = X[, ncol], ...) :
   number of groups exceeds number of available colors
 colors are recycled' 
 #funktioniert trotzdem
+
+#Latex Ausgabe
+
+#Tabelle 1: metrische Variablen 
+xtable(caption = "univariate Kenngrößen für metrische Variablen",
+       cbind("Nettomiete (€)" = erstell_tabelle(na.omit(MS$nm)),
+             "Wohnfläche (qm)" = erstell_tabelle(na.omit(MS$wfl)),
+             "Zimmeranzahl" = erstell_tabelle(na.omit(MS$rooms)),
+             "Baujahr" = erstell_tabelle(na.omit(MS$bj))),
+       digits = 2)
+
+#Tabelle 2: dichotome  Variablen
+
+xtable(caption = "Deskriptive Kenngrößen für dichotome Variablen",
+       cbind("Gute Lage"= c(table(MS$wohngut), table(MS$wohngut)/length(MS$wohngut)),
+             "Beste Lage" = c(table(MS$wohnbest), table(MS$wohnbest)/length(MS$wohnbest)),
+             "zentrale Warmwasserversorgung" = c(table(MS$ww0), table(MS$ww0)/length(MS$ww0)),
+             "Zentralheizung" =c(table(MS$zh0), table(MS$zh0)/length(MS$zh0)),
+             "Gefliestes Bad" =c(table(MS$badkach0), table(MS$badkach0)/length(MS$badkach0)),
+             "Badausstattung" =c(table(MS$badextra), table(MS$badextra)/length(MS$badextra)),
+             "Küchenaustattung" =c(table(MS$kueche), table(MS$kueche)/length(MS$kueche))))
+
+#Abbildung 1: Boxplot Nettomiete
+rand <- par(mar = c(20, 4, 2, 2) + 0.2)
+boxplot(MS$nm, col = "slategray2",xlab = "Nettomiete in Euro", horizontal = T)
