@@ -1,0 +1,108 @@
+# univariate Betrachtung:
+boxplot(miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+hist(miete$nm, breaks = 200, col = "lightblue", xlab = "Nettomiete (in Euro)",
+     ylab = "Dichte", main = NA)
+
+boxplot(miete$wfl, col = "lightblue", ylab = "Wohnfläche (in qm)")
+hist(miete$wfl, breaks = 100, col = "lightblue", xlab = "Wohnfläche (in qm)",
+     ylab = "Dichte", main = NA)
+
+barplot(table(miete$rooms), col = "lightblue", xlab = "Zimmeranzahl", 
+        ylab = "abs. Häufigkeit", ylim = c(0, 1200))
+barplot(table(miete$rooms)/length(miete$rooms), col = "lightblue", 
+        xlab = "Zimmeranzahl", ylab = "rel. Häufigkeit", ylim = c(0, 0.4))
+
+barplot(table(miete$bj), col = "lightblue", xlab = "Baujahr", 
+        ylab = "abs. Häufigkeit", ylim = c(0, 1000), las = 2)
+barplot(table(miete$bj)/length(miete$bj), col = "lightblue", xlab = "Baujahr", 
+        ylab = "rel. Häufigkeit", ylim = c(0, 0.3))
+
+plot(miete$bez, las = 2, col = "lightblue", main = "Bezirk", 
+     ylab = "abs. Häufigkeit", ylim = c(0, 250))
+barplot(table(miete$bez)/length(miete$bez), col = "lightblue", las = 2, 
+        ylab = "rel. Häufigkeit", main = "Bezirk", ylim = c(0, 0.08))
+
+plot(miete$wohngut, col = "lightblue", ylab = "abs. Häufigkeit", 
+     ylim = c(0, 2000))
+barplot(table(miete$wohngut)/length(miete$wohngut), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 0.7))
+
+plot(miete$wohnbest, col = "lightblue", ylab = "abs. Häufigkeit", 
+     ylim = c(0, 3000))
+barplot(table(miete$wohnbest)/length(miete$wohnbest), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 1))
+
+plot(miete$ww0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Warmwasserversorgung vom Vermieter gestellt", ylim = c(0, 3500))
+barplot(table(miete$ww0)/length(miete$ww0), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 1),
+        xlab = "Warmwasserversorgung vom Vermieter gestellt")
+
+plot(miete$zh0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Zentralheizung verfügbar", ylim = c(0, 3000))
+barplot(table(miete$zh0)/length(miete$zh0), col = "lightblue", ylim = c(0, 1),
+        ylab = "rel. Häufigkeit", xlab = "Zentralheizung verfügbar")
+
+plot(miete$badkach0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "gefliestes Bad", ylim = c(0, 3000))
+barplot(table(miete$badkach0)/length(miete$badkach0), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "gefliestes Bad", ylim = c(0, 1))
+
+plot(miete$badextra, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Badausstattung", ylim = c(0, 3000))
+barplot(table(miete$badextra)/length(miete$badextra), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "Badausstattung", ylim = c(0, 1))
+
+plot(miete$kueche, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Küchenausstattung", ylim = c(0, 2500))
+barplot(table(miete$kueche)/length(miete$kueche), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "Küchenausstattung", ylim = c(0, 0.8))
+
+
+
+# bivariate Betrachtung der Nettomiete:
+plot(miete$wfl, miete$nm, xlab = "Wohnfläche (in qm)", 
+     ylab = "Nettomiete (inEuro)", col = rgb(0, 0, 0, alpha = 0.45))
+
+plot(miete$rooms, miete$nm, xlab = "Zimmeranzahl", 
+     ylab = "Nettomiete (in Euro)", col = rgb(0, 0, 0, alpha = 0.45))
+boxplot(miete$nm[miete$rooms == 1], miete$nm[miete$rooms == 2],
+        miete$nm[miete$rooms == 3], miete$nm[miete$rooms == 4],
+        miete$nm[miete$rooms == 5], miete$nm[miete$rooms == 6],
+        miete$nm[miete$rooms == 7], miete$nm[miete$rooms == 8], 
+        xlab = "Zimmeranzahl", ylab = "Nettomiete (in Euro)", col = "lightblue",
+        names = 1:8)
+
+plot(miete$bj, miete$nm, xlab = "Baujahr", ylab = "Nettomiete (in Euro)", 
+     col = rgb(0, 0, 0, alpha = 0.45))
+boxplot(miete$nm[miete$bj == 1918], miete$nm[miete$bj == 1924],
+        miete$nm[miete$bj == 1939], miete$nm[miete$bj == 1957.5],
+        miete$nm[miete$bj == 1972], miete$nm[miete$bj == 1983],
+        miete$nm[miete$bj == 1992.5], miete$nm[miete$bj == 2000.5],
+        miete$nm[miete$bj == 2006.5], miete$nm[miete$bj == 2010],
+        miete$nm[miete$bj == 2012.5], xlab = "Baujahr", 
+        ylab = "Nettomiete (in Euro)", col = "lightblue", 
+        names = dimnames(table(miete$bj))[[1]], las = 2)
+
+plot(miete$bez, miete$nm, main = "Bezirk", ylab = "Nettomiete (in Euro)", 
+     col = "lightblue", las = 2)
+
+plot(miete$wohngut, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+
+plot(miete$wohnbest, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+
+plot(miete$ww0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Warmwasserversorgung vom Vermieter gestellt")
+
+plot(miete$zh0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Zentralheizung verfügbar")
+
+plot(miete$badkach0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)",
+     xlab = "Gefliestes Bad")
+
+plot(miete$badextra, miete$nm,col = "lightblue", ylab = "Nettomiete (in Euro)",
+     xlab = "Ausstattung des Bades")
+
+plot(miete$kueche, miete$nm,col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Ausstattung der Küche")
+
