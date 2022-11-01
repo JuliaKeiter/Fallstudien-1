@@ -1,0 +1,271 @@
+# fehlende Werte:
+sum(is.na(miete))
+#[1] 0  
+
+
+# Deskriptive Kenngroessen zu den numerischen Variablen:
+erstell_tabelle <- function(daten){
+  speicher <- numeric(12)
+  speicher[1] <- mean(daten) 
+  speicher[2] <- median(daten)
+  speicher[3] <- min(daten)
+  speicher[4] <- max(daten)
+  speicher[5] <- speicher[4] - speicher[3]
+  speicher[6] <- quantile(daten, 1/4)
+  speicher[7] <- quantile(daten, 3/4)
+  speicher[8] <- IQR(daten)
+  speicher[9] <- sd(daten)
+  speicher[10] <- mad(daten)
+  speicher[11] <- skewness(daten)
+  speicher[12] <- kurtosis(daten)
+  names(speicher) <- c("arithm. Mittel", "Median", "Minimum", "Maximum",
+                       "Spannweite", "1.Quartil", "3.Quartil", "IQR",
+                       "Standardabw.", "MAD","Schiefe", "Wölbung")
+  return(speicher)
+}
+
+erstell_tabelle(miete$nm)
+# arithm. Mittel         Median        Minimum        Maximum     Spannweite 
+#     763.063396     700.000000     174.750000    6000.000000    5825.250000 
+#
+#  1.Quartil      3.Quartil            IQR   Standardabw.            MAD 
+# 550.000000     910.460000     360.460000     338.162672     261.901290 
+#
+#  Schiefe        Wölbung 
+# 2.589191      25.474844
+
+erstell_tabelle(miete$nmqm)
+# arithm. Mittel         Median        Minimum        Maximum     Spannweite      
+#    10.73159869    10.84000000     2.47000000    22.13000000    19.66000000     
+#
+#  1.Quartil      3.Quartil
+# 9.03000000    12.45000000 
+#
+#        IQR   Standardabw.            MAD        Schiefe        Wölbung 
+# 3.42000000     2.67451983     2.50559400     0.04389988     3.33967955
+
+
+erstell_tabelle(miete$wfl)
+# arithm. Mittel         Median        Minimum        Maximum     Spannweite 
+#      71.977814      70.000000      15.000000     300.000000     285.000000 
+#
+# 1.Quartil      3.Quartil            IQR   Standardabw.            MAD 
+# 55.000000      85.000000      30.000000      25.742312      22.239000
+#
+#  Schiefe        Wölbung 
+# 1.351719       8.334088
+
+erstell_tabelle(miete$rooms)
+# arithm. Mittel         Median        Minimum        Maximum     Spannweite 
+#      2.7014682      3.0000000      1.0000000      8.0000000      7.0000000 
+#
+# 1.Quartil      3.Quartil            IQR   Standardabw.            MAD 
+# 2.0000000      3.0000000      1.0000000      0.9788633      1.4826000 
+#
+#   Schiefe        Wölbung 
+# 0.4600509      3.5977241
+
+erstell_tabelle(miete$bj)
+# arithm. Mittel         Median        Minimum        Maximum     Spannweite 
+#   1964.2122349   1957.5000000   1918.0000000   2012.5000000     94.5000000 
+#
+#    1.Quartil      3.Quartil            IQR   Standardabw.            MAD 
+# 1957.5000000   1983.0000000     25.5000000     26.5054412     27.4281000 
+#
+#    Schiefe        Wölbung 
+# -0.1823192      2.3144530
+
+
+
+# Betrachtung der nominalen Variablen:
+table(miete$bez)
+#         Allach-Untermenzing          Altstadt-Lehel             Au-Haidhausen 
+#                          25                      47                       167 
+#                   Aubing...            Berg am Laim               Bogenhausen 
+#                          56                     101                       159 
+#     Fledmoching-Hasenbergel                  Hadern                      Laim 
+#                          78                      79                       100 
+# Ludwigvorstadt-Isarvorstadt             Maxvorstadt     Milbersthofen-Am Hart 
+#                         154                     168                       134 
+#                     Moosach   Neuhausen-Nymphenburg               Obergiesing 
+#                          92                     234                       145 
+#          Pasing-Obermenzing      Ramersdorf-Perlach        Schwabing-Freimann 
+#                         118                     181                       140 
+#              Schwabing West        Schwanthalerhöhe                  Sendling 
+#                         165                      87                       126 
+#           Sendling-Westpark          Thalkirchen...            Trudering-Riem 
+#                         122                     175                        81 
+#                Untergiesing 
+#                         131 
+
+table(miete$wohngut)
+# andere Lagekategorie            Gute Lage 
+#                 1980                 1085
+
+table(miete$wohngut)/3065 #bekannt, dass es keine NA's gibt
+# andere Lagekategorie            Gute Lage 
+#            0.6460033            0.3539967 
+
+
+table(miete$wohnbest)
+# andere Lagekategorie           Beste Lage 
+#                 2955                  110 
+
+table(miete$wohnbest)/3065
+# andere Lagekategorie           Beste Lage 
+#           0.96411093           0.03588907 
+
+
+table(miete$ww0)
+#   ja nein 
+# 3039   26
+
+table(miete$ww0)/3065
+#          ja        nein 
+# 0.991517129 0.008482871
+
+
+table(miete$zh0)
+#   ja nein 
+# 2861  204
+
+table(miete$zh0)/3065
+#         ja       nein 
+# 0.93344209 0.06655791
+
+
+table(miete$badkach0)
+# gefliest nicht gefliest 
+#      380           2685 
+
+table(miete$badkach0)/3065
+#  gefliest nicht gefliest 
+# 0.1239804      0.8760196 
+
+
+table(miete$badextra)
+# gehoben  normal 
+#     361    2704 
+
+table(miete$badextra)/3065
+#   gehoben    normal 
+# 0.1177814 0.8822186
+
+
+table(miete$kueche)
+# gehoben  normal 
+#     767    2298 
+
+table(miete$kueche)/3065
+#   gehoben    normal 
+# 0.2502447 0.7497553 
+
+
+
+# univariate Betrachtung:
+boxplot(miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+hist(miete$nm, breaks = 200, col = "lightblue", xlab = "Nettomiete (in Euro)",
+     ylab = "Dichte", main = NA)
+
+boxplot(miete$wfl, col = "lightblue", ylab = "Wohnfläche (in qm)")
+hist(miete$wfl, breaks = 100, col = "lightblue", xlab = "Wohnfläche (in qm)",
+     ylab = "Dichte", main = NA)
+
+barplot(table(miete$rooms), col = "lightblue", xlab = "Zimmeranzahl", 
+        ylab = "abs. Häufigkeit", ylim = c(0, 1200))
+barplot(table(miete$rooms)/length(miete$rooms), col = "lightblue", 
+        xlab = "Zimmeranzahl", ylab = "rel. Häufigkeit", ylim = c(0, 0.4))
+
+barplot(table(miete$bj), col = "lightblue", xlab = "Baujahr", 
+        ylab = "abs. Häufigkeit", ylim = c(0, 1000), las = 2)
+barplot(table(miete$bj)/length(miete$bj), col = "lightblue", xlab = "Baujahr", 
+        ylab = "rel. Häufigkeit", ylim = c(0, 0.3))
+
+plot(miete$bez, las = 2, col = "lightblue", main = "Bezirk", 
+     ylab = "abs. Häufigkeit", ylim = c(0, 250))
+barplot(table(miete$bez)/length(miete$bez), col = "lightblue", las = 2, 
+        ylab = "rel. Häufigkeit", main = "Bezirk", ylim = c(0, 0.08))
+
+plot(miete$wohngut, col = "lightblue", ylab = "abs. Häufigkeit", 
+     ylim = c(0, 2000))
+barplot(table(miete$wohngut)/length(miete$wohngut), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 0.7))
+
+plot(miete$wohnbest, col = "lightblue", ylab = "abs. Häufigkeit", 
+     ylim = c(0, 3000))
+barplot(table(miete$wohnbest)/length(miete$wohnbest), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 1))
+
+plot(miete$ww0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Warmwasserversorgung vom Vermieter gestellt", ylim = c(0, 3500))
+barplot(table(miete$ww0)/length(miete$ww0), col = "lightblue",
+        ylab = "rel. Häufigkeit", ylim = c(0, 1),
+        xlab = "Warmwasserversorgung vom Vermieter gestellt")
+
+plot(miete$zh0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Zentralheizung verfügbar", ylim = c(0, 3000))
+barplot(table(miete$zh0)/length(miete$zh0), col = "lightblue", ylim = c(0, 1),
+        ylab = "rel. Häufigkeit", xlab = "Zentralheizung verfügbar")
+
+plot(miete$badkach0, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "gefliestes Bad", ylim = c(0, 3000))
+barplot(table(miete$badkach0)/length(miete$badkach0), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "gefliestes Bad", ylim = c(0, 1))
+
+plot(miete$badextra, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Badausstattung", ylim = c(0, 3000))
+barplot(table(miete$badextra)/length(miete$badextra), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "Badausstattung", ylim = c(0, 1))
+
+plot(miete$kueche, col = "lightblue", ylab = "abs. Häufigkeit", 
+     xlab = "Küchenausstattung", ylim = c(0, 2500))
+barplot(table(miete$kueche)/length(miete$kueche), col = "lightblue",
+        ylab = "rel. Häufigkeit", xlab = "Küchenausstattung", ylim = c(0, 0.8))
+
+
+
+# bivariate Betrachtung der Nettomiete:
+plot(miete$wfl, miete$nm, xlab = "Wohnfläche (in qm)", 
+     ylab = "Nettomiete (inEuro)", col = rgb(0, 0, 0, alpha = 0.45))
+
+plot(miete$rooms, miete$nm, xlab = "Zimmeranzahl", 
+     ylab = "Nettomiete (in Euro)", col = rgb(0, 0, 0, alpha = 0.45))
+boxplot(miete$nm[miete$rooms == 1], miete$nm[miete$rooms == 2],
+        miete$nm[miete$rooms == 3], miete$nm[miete$rooms == 4],
+        miete$nm[miete$rooms == 5], miete$nm[miete$rooms == 6],
+        miete$nm[miete$rooms == 7], miete$nm[miete$rooms == 8], 
+        xlab = "Zimmeranzahl", ylab = "Nettomiete (in Euro)", col = "lightblue",
+        names = 1:8)
+
+plot(miete$bj, miete$nm, xlab = "Baujahr", ylab = "Nettomiete (in Euro)", 
+     col = rgb(0, 0, 0, alpha = 0.45))
+boxplot(miete$nm[miete$bj == 1918], miete$nm[miete$bj == 1924],
+        miete$nm[miete$bj == 1939], miete$nm[miete$bj == 1957.5],
+        miete$nm[miete$bj == 1972], miete$nm[miete$bj == 1983],
+        miete$nm[miete$bj == 1992.5], miete$nm[miete$bj == 2000.5],
+        miete$nm[miete$bj == 2006.5], miete$nm[miete$bj == 2010],
+        miete$nm[miete$bj == 2012.5], xlab = "Baujahr", 
+        ylab = "Nettomiete (in Euro)", col = "lightblue", 
+        names = dimnames(table(miete$bj))[[1]], las = 2)
+
+plot(miete$bez, miete$nm, main = "Bezirk", ylab = "Nettomiete (in Euro)", 
+     col = "lightblue", las = 2)
+
+plot(miete$wohngut, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+
+plot(miete$wohnbest, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)")
+
+plot(miete$ww0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Warmwasserversorgung vom Vermieter gestellt")
+
+plot(miete$zh0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Zentralheizung verfügbar")
+
+plot(miete$badkach0, miete$nm, col = "lightblue", ylab = "Nettomiete (in Euro)",
+     xlab = "Gefliestes Bad")
+
+plot(miete$badextra, miete$nm,col = "lightblue", ylab = "Nettomiete (in Euro)",
+     xlab = "Ausstattung des Bades")
+
+plot(miete$kueche, miete$nm,col = "lightblue", ylab = "Nettomiete (in Euro)", 
+     xlab = "Ausstattung der Küche")
