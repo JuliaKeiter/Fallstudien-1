@@ -1,0 +1,7 @@
+
+miete$wohnlage <- rep(0, length(miete$wohngut))
+miete$wohnlage[which(miete$wohnbest == 1)] <- "beste"
+miete$wohnlage[which(miete$wohngut == 1)] <- "gute"
+miete$wohnlage[which(miete$wohnlage == 0)] <- "andere"
+
+miete$wohnlage <- as.factor(miete$wohnlage)
