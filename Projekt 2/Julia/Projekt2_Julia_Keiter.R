@@ -4,8 +4,6 @@ setwd("~/Documents/Uni/6. Semester/Fallstudien/Projekt 2")
 library(moments)
 library(car)
 library(xtable)
-install.packages("DAAG")
-library(DAAG)
 
 #Einlesung der Daten####
 miete <- read.csv("mietspiegel2015.csv", header = T, sep=" ", quote = "\"\"",
@@ -172,30 +170,89 @@ $kueche
 gehoben  normal 
     767    2298'
 
-
-#Ausreißer: nm=6000 entfernen
-#miete <- subset(miete, nm!=6000.00)
-
-
 #Modellbildung
 mietelm1 <- lm(nm ~ ., data = miete[,-2]) # Regressant: nm, Regressor: alle anderen Variablen
 
 summary(mietelm1)
+'
+Call:
+lm(formula = nm ~ ., data = miete[, -2])
 
-par(mfrow=c(2,3))
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-975.11  -95.77    4.80   93.97 2454.63 
+
+Coefficients:
+                                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                    -3.173e+03  2.955e+02 -10.737  < 2e-16 ***
+wfl                             1.172e+01  2.483e-01  47.193  < 2e-16 ***
+roomiete                       -4.642e+01  6.487e+00  -7.157 1.03e-12 ***
+bj                              1.649e+00  1.473e-01  11.195  < 2e-16 ***
+bezAltstadt-Lehel               7.912e-01  4.746e+01   0.017  0.98670    
+bezAu-Haidhausen                6.966e+01  4.019e+01   1.733  0.08318 .  
+bezAubing...                   -5.324e+01  4.455e+01  -1.195  0.23211    
+bezBerg am Laim                -3.491e+01  4.140e+01  -0.843  0.39910    
+bezBogenhausen                  1.587e+00  4.005e+01   0.040  0.96840    
+bezFledmoching-Hasenbergel     -8.195e+01  4.258e+01  -1.924  0.05440 .  
+bezHadern                      -3.054e+01  4.250e+01  -0.719  0.47246    
+bezLaim                        -2.704e+01  4.149e+01  -0.652  0.51467    
+bezLudwigvorstadt-Isarvorstadt  1.103e+02  4.048e+01   2.726  0.00645 ** 
+bezMaxvorstadt                  1.037e+02  4.044e+01   2.563  0.01042 *  
+bezMilbersthofen-Am Hart        4.118e+00  4.045e+01   0.102  0.91891    
+bezMoosach                     -1.248e+01  4.178e+01  -0.299  0.76509    
+bezNeuhausen-Nymphenburg        4.623e+01  3.931e+01   1.176  0.23963    
+bezObergiesing                 -1.632e+01  4.017e+01  -0.406  0.68456    
+bezPasing-Obermenzing          -6.919e-02  4.093e+01  -0.002  0.99865    
+bezRamersdorf-Perlach          -7.216e+01  3.950e+01  -1.827  0.06784 .  
+bezSchwabing West               4.065e+01  4.029e+01   1.009  0.31311    
+bezSchwabing-Freimann           6.876e+01  4.045e+01   1.700  0.08925 .  
+bezSchwanthalerhöhe             4.503e+01  4.222e+01   1.067  0.28628    
+bezSendling                     3.032e+01  4.064e+01   0.746  0.45568    
+bezSendling-Westpark           -1.863e+01  4.070e+01  -0.458  0.64720    
+bezThalkirchen...              -2.339e+01  3.970e+01  -0.589  0.55567    
+bezTrudering-Riem              -3.490e+01  4.259e+01  -0.819  0.41264    
+bezUntergiesing                 3.597e+01  4.056e+01   0.887  0.37517    
+wohngutGute Lage                4.494e+01  8.779e+00   5.119 3.27e-07 ***
+wohnbestBeste Lage              1.014e+02  2.013e+01   5.039 4.96e-07 ***
+ww0nein                        -1.789e+02  3.782e+01  -4.730 2.35e-06 ***
+zh0nein                        -7.861e+01  1.434e+01  -5.480 4.59e-08 ***
+badkach0nicht gefliest          5.233e+01  1.047e+01   4.997 6.15e-07 ***
+badextranormal                 -3.290e+01  1.095e+01  -3.004  0.00269 ** 
+kuechenormal                   -8.557e+01  8.168e+00 -10.476  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 184.9 on 3030 degrees of freedom
+Multiple R-squared:  0.7043,	Adjusted R-squared:  0.701 
+F-statistic: 212.3 on 34 and 3030 DF,  p-value: < 2.2e-16'
+
+#Diagnostikplots
+par(mfrow=c(2,2))
 plot(mietelm1, which = 1) #residual vs fitted
 plot(mietelm1, which = 2) #q-q-plots
-plot(mietelm1, which = 3) #scale-location
+#plot(mietelm1, which = 3) #scale-location
 plot(mietelm1, which = 4) #cooks distance
 plot(mietelm1, which = 5) #leverage
-plot(mietelm1, which=6)
+#plot(mietelm1, which=6)
 
 #Multikollinearität
 #über Determinante
 det(t(model.matrix(mietelm1))%*%model.matrix(mietelm1))
 
 #über VIF
-DAAG::vif(mietelm1)
+vif(mietelm1)
+'             GVIF Df GVIF^(1/(2*Df))
+wfl      3.662250  1        1.913701
+roomiete 3.613489  1        1.900918
+bj       1.365513  1        1.168552
+bez      2.399914 24        1.018406
+wohngut  1.580082  1        1.257013
+wohnbest 1.256332  1        1.120862
+ww0      1.078327  1        1.038425
+zh0      1.146077  1        1.070550
+badkach0 1.067753  1        1.033321
+badextra 1.117421  1        1.057082
+kueche   1.122234  1        1.059355'
 
 #Latex Ausgabe
 

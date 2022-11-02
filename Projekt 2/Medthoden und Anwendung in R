@@ -1,3 +1,14 @@
 ## PROJEKT 2 ##
 
 # Methoden und zugehöriger R-Code:
+
+#Modellbildung
+-lm()
+-t-Test
+
+#Modelldiagnostik
+-Residualplots
+-QQ-Plots
+-Cooks-Distance
+-Leverage Plots
+-Mulitkolinearität: VIF, Determinante
