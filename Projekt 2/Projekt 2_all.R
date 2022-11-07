@@ -319,6 +319,6 @@ summary(m7)$coefficients
 
 # badextra hinzufeugen
 
-m7 <- lm(nm ~ wfl + kueche + wohnlage + bj + ww0 + badkach0 + zh0 + bez + badextra + rooms , data = miete )
+m7 <- lm(nm ~ wfl + kueche + wohnlage + bj + ww0 + badkach0 + zh0 + bez + badextra , data = miete )
 summary(m7)
 plot(m7)
