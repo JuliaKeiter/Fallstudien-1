@@ -5,6 +5,8 @@
 #Modellbildung
 -lm()
 -t-Test
+-p-value
+-Selektionsmethoden: adj. Rsqr, AIC, BIC, vorwärts Selektion, rückwärts Elimination
 
 #Modelldiagnostik
 -Residualplots
