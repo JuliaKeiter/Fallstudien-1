@@ -293,7 +293,8 @@ F-statistic: 719.8 on 9 and 3055 DF,  p-value: < 2.2e-16
 
 #Modellauswahl####
 #nur Radjsqr, AIC und BIC werden betrachtet
-#xtable(ols_step_all_possible(mietelm3)[,-c(1,4,6,7,9,11:14)])
+regression <- ols_step_all_possible(mietelm3)[,-c(1,4,6,7,9,11:14)]
+
 
 #es wird das volle Modell gewählt
 
@@ -317,9 +318,9 @@ nm ~ wfl + bj + wohngut + wohnbest + ww0 + zh0 + badkach0 + badextra +
 
 #es wird das volle Modell gewählt
 
-#Modellauswahl mit Rückwärts-Elimination
+'Modellauswahl mit Rückwärts-Elimination
 lm.back <- step(mietelm3, scope = formula(miete[,-c(2,4,6)]), direction = "both")
-'Start:  AIC=32229.39
+Start:  AIC=32229.39
 nm ~ wfl + bj + wohngut + wohnbest + ww0 + zh0 + badkach0 + badextra + 
   kueche
 
@@ -333,8 +334,8 @@ Df Sum of Sq       RSS   AIC
 - bj        1   2447830 114735516 32293
 - kueche    1   4829572 117117258 32356
 - wohngut   1   5131760 117419446 32364
-- wfl       1 189936643 302224329 35262'
-#es wird das volle Modell gewählt
+- wfl       1 189936643 302224329 35262
+es wird das volle Modell gewählt'
 
 #Diagnostikplots 
 par( mfrow = c(2,2))
@@ -407,7 +408,7 @@ qr(model.matrix(mietelm4))$rank
 par( mfrow = c(2,2))
 par(mar = c(5, 4, 2, 2) + 0.2)
 #Residualplot
-plot(mietelm4, which = 1, main = "d", sub="", caption = "", ann=F)
+plot(mietelm4, which = 3, main = "d", sub="", caption = "", ann=F)
 title(xlab= expression(paste(, hat(y),)), ylab=expression(paste(, epsilon,)))
 #QQ-Plot
 plot(mietelm4, which = 2, main = "d", sub="", caption = "", ann=F)
@@ -428,7 +429,7 @@ vif(mietelm4)
 
 
 ######################Latex Ausgabe#########################
-#Tabelle 1: metrische Variablen 
+#Tabelle 2: metrische Variablen 
 xtable(caption = "univariate Kenngrößen für metrische Variablen",
        cbind("Nettomiete (€)" = erstell_tabelle(na.omit(miete$nm)),
              "Wohnfläche (qm)" = erstell_tabelle(na.omit(miete$wfl)),
@@ -436,7 +437,7 @@ xtable(caption = "univariate Kenngrößen für metrische Variablen",
              "Baujahr" = erstell_tabelle(na.omit(miete$bj))),
        digits = 2)
 
-#Tabelle 2: dichotome  Variablen
+#Tabelle 3: dichotome  Variablen
 
 xtable(caption = "Deskriptive Kenngrößen für dichotome Variablen",
        cbind("Gute Lage"= c(table(miete$wohngut), table(miete$wohngut)/length(miete$wohngut)),
@@ -447,8 +448,23 @@ xtable(caption = "Deskriptive Kenngrößen für dichotome Variablen",
              "Badausstattung" =c(table(miete$badextra), table(miete$badextra)/length(miete$badextra)),
              "Küchenaustattung" =c(table(miete$kueche), table(miete$kueche)/length(miete$kueche))))
 
-#Tabelle 3: Korrelationsanalyse
+#Tabelle 4: Korrelationsanalyse
 xtable(cor(model.matrix(mietelm2)[,-1], method = "spearman"))
+
+#Tabelle 5: Variablenselektion
+xtable(ols_step_all_possible(mietelm3)[,-c(1,4,6,7,9,11:14)])
+
+#Tabelle 6:
+xtable(summary(mietelm1))
+
+#Tabelle 7:
+xtable(summary(mietelm2))
+
+#Tabelle 8:
+xtable(summary(mietelm3))
+
+#Tabelle 9:
+xtable(summary(mietelm4))
 
 #Abbildung 1: Boxplot Nettomiete
 par( mfrow = c(1,1))
