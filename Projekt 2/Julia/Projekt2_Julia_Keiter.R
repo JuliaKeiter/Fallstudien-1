@@ -10,6 +10,7 @@ library(glmnet)
 library(olsrr)
 library(UsingR)
 library(corrplot)
+library(Metrics)
 
 #Einlesung der Daten####
 miete <- read.csv("mietspiegel2015.csv", header = T, sep=" ", quote = "\"\"",
@@ -31,28 +32,6 @@ str(miete)
  $ badkach0: int  1 1 1 1 0 1 1 0 1 1 ...
  $ badextra: int  0 0 1 0 0 0 1 0 0 1 ...
  $ kueche  : int  0 1 0 1 0 0 1 1 0 0 ...'
-
-'#Strukturierung der Variablen
-miete$wohngut[miete$wohngut == 1] <- "Gute Lage"
-miete$wohngut[miete$wohngut == 0] <- "andere Lagekategorie"
-
-miete$wohnbest[miete$wohnbest == 1] <- "Beste Lage"
-miete$wohnbest[miete$wohnbest == 0] <- "andere Lagekategorie"
-
-miete$ww0[miete$ww0 == 1] <- "nein"
-miete$ww0[miete$ww0 == 0] <- "ja"
-
-miete$zh0[miete$zh0 == 1] <- "nein"
-miete$zh0[miete$zh0 == 0] <- "ja"
-
-miete$badkach0[miete$badkach0 == 1] <- "nicht gefliest"
-miete$badkach0[miete$badkach0 == 0] <- "gefliest"
-
-miete$badextra[miete$badextra == 1] <- "gehoben"
-miete$badextra[miete$badextra == 0] <- "normal"
-
-miete$kueche[miete$kueche == 1] <- "gehoben"
-miete$kueche[miete$kueche == 0] <- "normal"'
 
 #Faktorisierung der nominalen Variablen
 miete$bez <- as.factor(miete$bez)
@@ -242,16 +221,6 @@ Multiple R-squared:  0.7043,	Adjusted R-squared:  0.701
 F-statistic: 212.3 on 34 and 3030 DF,  p-value: < 2.2e-16'
 #nur drei von 24 Bezirken signifikant -> Variable Bezirk entfernen
 
-summary(mietelm1)$adj.r.squared
-summary(mietelm2)$adj.r.squared
-summary(mietelm3)$adj.r.squared
-AIC(mietelm1)
-AIC(mietelm2)
-AIC(mietelm3)
-BIC(mietelm1)
-BIC(mietelm2)
-BIC(mietelm3)
-
 #Modell 2####
 #Modellbildung ohne Variable Bezirk
 mietelm2 <- lm(nm ~ ., data = miete[,-c(2,6)]) # Regressant: nm, Regressor: alle anderen Variablen
@@ -287,10 +256,7 @@ F-statistic:   670 on 10 and 3054 DF,  p-value: < 2.2e-16
 #alle Variablen sind signifikant, Interpretation von Zimmerkoeffizient fragwürdig
 
 #Korrelationsanalyse
-# Korrelation zwischen rooms und wfl
-cor(model.matrix(mietelm2)[,2],model.matrix(mietelm2)[,3], method = "spearman")
-#[1] 0.8590685
-corrplot(cor(model.matrix(mietelm2)[,-1], method = "spearman"))
+cor(model.matrix(mietelm2)[,-1], method = "spearman")
 
 #Modell 3####
 #Modellbildung ohne Variable Bezirk
@@ -325,19 +291,9 @@ F-statistic: 719.8 on 9 and 3055 DF,  p-value: < 2.2e-16
 '
 #alle Variablen sind signifikant, Interpretation aller Koeffizienten sinnvoll
 
-#Voraussetzungen erfüllt?
-
-#Spaltenrang von Designmatrix X
-Design <- model.matrix(mietelm3)
-ncol(model.matrix(mietelm3))
-#[1] 10
-qr(model.matrix(mietelm3))$rank
-#[1] 10
-#Voraussetzung voller Spaltenrang erfüllt
-
 #Modellauswahl####
 #nur Radjsqr, AIC und BIC werden betrachtet
-regression <- ols_step_all_possible(mietelm3)[,-c(1,4,6,7,9,11:14)]
+#xtable(ols_step_all_possible(mietelm3)[,-c(1,4,6,7,9,11:14)])
 
 #es wird das volle Modell gewählt
 
@@ -385,17 +341,17 @@ par( mfrow = c(2,2))
 par(mar = c(5, 4, 2, 2) + 0.2)
 #Residualplot
 plot(mietelm3, which = 1, main = "d", sub="", caption = "", ann=F)
-title(xlab = "Angepasste Werte", ylab="Residuen")
+title(xlab= expression(paste(, hat(y),)), ylab=expression(paste(, epsilon,)))
 #QQ-Plot
 plot(mietelm3, which = 2, main = "d", sub="", caption = "", ann=F)
-title(xlab = "Theoretische Quantile der Normalverteiung", ylab="Standardisierte Residuen")
+title(xlab = "Theoretische Quantile der Normalverteiung", ylab=expression(paste(, tilde(epsilon),)))
 #Cooks-Distance
 plot(mietelm3, which = 4, main = "d", sub="", caption = "", ann=F)
 title(xlab = " Beobachtungsnummer", ylab="Cook's Distance")
 length(which(cooks.distance(mietelm1) > 4/3065))
 #Leverage
 plot(mietelm3, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
-title(xlab = "Leverage Scores", ylab="Standardisierte Residuen")
+title(xlab = "Leverage Scores", ylab=expression(paste(, tilde(epsilon),)))
 
 #Beobachtung 1975 auffällig
 sum(cooks.distance(mietelm3)>0.5)
@@ -437,21 +393,31 @@ Residual standard error: 185.2 on 3054 degrees of freedom
 Multiple R-squared:  0.6756,	Adjusted R-squared:  0.6746 
 F-statistic: 706.7 on 9 and 3054 DF,  p-value: < 2.2e-16'
 
+#Voraussetzungen erfüllt?
+
+#Spaltenrang von Designmatrix X
+Design <- model.matrix(mietelm4)
+ncol(model.matrix(mietelm4))
+#[1] 10
+qr(model.matrix(mietelm4))$rank
+#[1] 10
+#Voraussetzung voller Spaltenrang erfüllt
+
 #Diagnostikplots 
 par( mfrow = c(2,2))
 par(mar = c(5, 4, 2, 2) + 0.2)
 #Residualplot
 plot(mietelm4, which = 1, main = "d", sub="", caption = "", ann=F)
-title(xlab = "Angepasste Werte", ylab="Residuen")
+title(xlab= expression(paste(, hat(y),)), ylab=expression(paste(, epsilon,)))
 #QQ-Plot
 plot(mietelm4, which = 2, main = "d", sub="", caption = "", ann=F)
-title(xlab = "Theoretische Quantile der Normalverteiung", ylab="Standardisierte Residuen")
+title(xlab = "Theoretische Quantile der Normalverteiung", ylab=expression(paste(, tilde(epsilon),)))
 #Cooks-Distance
 plot(mietelm4, which = 4, main = "d", sub="", caption = "", ann=F)
 title(xlab = " Beobachtungsnummer", ylab="Cook's Distance")
 #Leverage
 plot(mietelm4, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
-title(xlab = "Leverage Scores", ylab="Standardisierte Residuen")
+title(xlab = "Leverage Scores", ylab=expression(paste(, tilde(epsilon),)))
 
 #Multikolinearität
 #über VIF
@@ -481,31 +447,67 @@ xtable(caption = "Deskriptive Kenngrößen für dichotome Variablen",
              "Badausstattung" =c(table(miete$badextra), table(miete$badextra)/length(miete$badextra)),
              "Küchenaustattung" =c(table(miete$kueche), table(miete$kueche)/length(miete$kueche))))
 
+#Tabelle 3: Korrelationsanalyse
+xtable(cor(model.matrix(mietelm2)[,-1], method = "spearman"))
+
 #Abbildung 1: Boxplot Nettomiete
 par( mfrow = c(1,1))
-par(mar = c(20, 4, 2, 2) + 0.2)
+par(mar = c(5, 4, 6, 2) + 0.2)
 boxplot(miete$nm, col = "slategray2",xlab = "Nettomiete in Euro", horizontal = T)
 
-#Abbildung 2: Residualplot bei Homoskedastizität der Residuen
+#Abbildung 2: Diagnostikplots Modell 3
+par( mfrow = c(2,2))
+par(mar = c(5, 4, 2, 2) + 0.2)
+#Residualplot
+plot(mietelm3, which = 1, main = "d", sub="", caption = "", ann=F)
+title(xlab= expression(paste(, hat(y),)), ylab=expression(paste(, epsilon,)))
+#QQ-Plot
+plot(mietelm3, which = 2, main = "d", sub="", caption = "", ann=F)
+title(xlab = "Theoretische Quantile der Normalverteiung", ylab=expression(paste(, tilde(epsilon),)))
+#Cooks-Distance
+plot(mietelm3, which = 4, main = "d", sub="", caption = "", ann=F)
+title(xlab = " Beobachtungsnummer", ylab="Cook's Distance")
+length(which(cooks.distance(mietelm1) > 4/3065))
+#Leverage
+plot(mietelm3, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
+title(xlab = "Leverage Scores", ylab=expression(paste(, tilde(epsilon),)))
+
+
+#Abbildung 3: Diagnostikplots Modell 4
+par( mfrow = c(2,2))
+par(mar = c(5, 4, 2, 2) + 0.2)
+#Residualplot
+plot(mietelm4, which = 1, main = "d", sub="", caption = "", ann=F)
+title(xlab= expression(paste(, hat(y),)),
+      ylab=expression(paste(, epsilon,)))
+#QQ-Plot
+plot(mietelm4, which = 2, main = "d", sub="", caption = "", ann=F)
+title(xlab = "Theoretische Quantile der Normalverteiung", ylab=expression(paste(, tilde(epsilon),)))
+#Cooks-Distance
+plot(mietelm4, which = 4, main = "d", sub="", caption = "", ann=F)
+title(xlab = "Beobachtungsnummer", ylab="Cook's Distance")
+#Leverage
+plot(mietelm4, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
+title(xlab = "Leverage Scores", ylab=expression(paste(, tilde(epsilon),)))
+
+#Abbildung 4: Residualplot bei Homoskedastizität der Residuen
+par( mfrow = c(1,1))
 par(mar = c(10, 4, 2, 2) + 0.2)
 set.seed(1714)
 x <- 1:50
 y <- 1 + x + rnorm(50, 0, 1)
 M2 <- lm ( y ~ x )
 plot(M2, which = 1, caption = " ", ann = FALSE, sub="") # Nv Annnahme 
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")))
+title(xlab= expression(paste(, hat(y),)),ylab=expression(paste(, epsilon,)))
 
-#Abbildung 3: Residualplot Homoskedastizität verletzt:
+#Abbildung 5: Residualplot Homoskedastizität verletzt:
 y <- 1 + x + rnorm(50, 0, 1:50)
 M3 <- lm ( y ~ x )
 plot(M3, which = 1, caption = " ", ann = FALSE, sub="") # Heterosk. 
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")))
+title(xlab= expression(paste(, hat(y),)),ylab=expression(paste(, epsilon,)))
 
-#Abbildung 4: Residualplots andere Scenarien
+#Abbildung 6: Residualplots andere Scenarien
 par( mfrow = c(2, 2))
-# par(mar=c(1,1,0,0))
 par(mar = c(5, 4, 2, 2) + 0.2)
 # (i) autoregressive Fehler mit positiver Korrelation:
 e <- rnorm( 1, 0, 1)
@@ -516,8 +518,8 @@ y <- 1 + x + e
 M6 <- lm (y ~ x)
 plot(M6, which = 1, caption = " ",
      ann = FALSE, sub = "") # positive Korr
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")),
+title(xlab= expression(paste(, hat(y),)),
+                       ylab=expression(paste(, epsilon,)),
       main="positive Korrelation", )
 
 # (ii) autoregressive Fehler mit neagtiver Korrelation:
@@ -529,8 +531,8 @@ y <- 1 + x + e
 M7 <- lm (y ~ x)
 plot(M7, which = 1, caption = " ",
      ann = FALSE, sub = "") # negative Korr
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")),
+title(xlab= expression(paste(, hat(y),)),
+                       ylab=expression(paste(, epsilon,)),
       main="negative Korrelation", )
 
 # (iii) Ausreisser:
@@ -539,86 +541,54 @@ y[20] <- 50
 M5 <- lm( y ~ x)
 plot(M5, which = 1, caption = " ",
      ann = FALSE, sub = "") # Ausreisser
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")),
-      main= "Ausreißer", )
+title(xlab= expression(paste(, hat(y),)),
+      ylab=expression(paste(, epsilon,)),
+      main= "Ausreißer")
 
 # (vi) Nichtlinearer Zusammenhang:
 y <- log( 1 + x + rnorm(50, 0, 1) )
 M8 <- lm( y ~ x )
 plot(M8, which = 1, caption = " ",
      ann = FALSE, sub = "") # nichtlinearer Zusammenhang
-title(xlab= expression(paste("angepasste Werte (", hat(y),")")),
-      ylab=expression(paste("Residuen (", e, ")")),
-      main="nichtlinearer Zusammenhang", )
+title(xlab= expression(paste(, hat(y),)),
+      ylab=expression(paste(, epsilon,)),
+      main="nichtlinearer Zusammenhang")
 
-
-#QQ-Plots Beispiele
 par( mfrow = c(1,1))
 par(mar = c(5, 4, 2, 2) + 0.2)
-load("skew.RData")
 
-#Abbildung 5: Normalverteilung
-  qqnorm(rnorm(1000, 0, 1),ylab = "Standardisierte Residuen", 
-         xlab = "Theoretische Quantile der Normalverteilung") 
+#Abbildung 7: #QQ-Plots Beispiel Normalverteilung
+  qqnorm(rnorm(1000, 0, 1),ylab=expression(paste(, tilde(epsilon),)), 
+         xlab = "Theoretische Quantile der Normalverteilung", main="") 
   qqline(rnorm(1000, 0, 1),lty=2)
   abline(a = 0, b = 1, col="red")
+
+#Abbildung 8: absolute prozentuale Residuen vs. fitted values  
+  plot(mietelm4$fitted.values, abs(mietelm4$fitted.values - miete[-1975,]$nm)/miete[-1975,]$nm,
+       ylab=expression(paste(, dot(epsilon),)), xlab= expression(paste(, hat(y),)))  
   
-#Abbildung 6: andere QQ-Plots
+#Abbildung 9: #QQ-Plots Beispiele andere 
   par(mfrow = c(2,2))
 #rechtsschiefe Verteilung
-  qqnorm(rexp(1000, 2), main="Extrem Rechtsschiefe Verteilung", 
-          ylab = "Standardisierte Residuen", 
+  qqnorm(rexp(1000, 2), main="Extrem rechtsschiefe Verteilung", 
+         ylab=expression(paste(, tilde(epsilon),)), 
           xlab = "Theoretische Quantile der Normalverteilung")
   abline(a = 0, b = 1, col="red")
-#linksschiefe Verteilung
-  qqnorm(dat[,9],  main="Extrem Linksschiefe Verteilung", 
-         ylab = "Standardisierte Residuen", 
+#linksschiefe Verteilung 
+  load("skew.RData") #Beispieldatensatz
+  qqnorm(dat[,9],  main="Extrem linksschiefe Verteilung", 
+         ylab=expression(paste(, tilde(epsilon),)), 
          xlab = "Theoretische Quantile der Normalverteilung")
   abline(a = 0, b = 1,col="red")
 #spitze Verteilung
-  qqnorm(rnorm(1000, 0, 0.2),main="Extrem Spitze Verteilung", 
-         ylab = "Standardisierte Residuen", 
+  qqnorm(rnorm(1000, 0, 0.2),main="Extrem spitze Verteilung", 
+         ylab=expression(paste(, tilde(epsilon),)), 
          xlab = "Theoretische Quantile der Normalverteilung") 
   abline(a = 0, b = 1, col="red")
 #flache Verteilung
   qqnorm(rnorm(1000, 0, 5), main="Extrem flache Verteilung", 
-         ylab = "Standardisierte Residuen", 
+         ylab=expression(paste(, tilde(epsilon),)), 
          xlab = "Theoretische Quantile der Normalverteilung") 
   abline(a = 0, b = 1, col="red")
+
   
-#Abbildung 6: Korrelationsplot nach Spearman
-  corrplot(cor(model.matrix(mietelm2)[,-1], method = "spearman"))
-  
-#Abbildung 7: Diagnostikplots Modell 3
-  par( mfrow = c(2,2))
-  par(mar = c(5, 4, 2, 2) + 0.2)
-  #Residualplot
-  plot(mietelm3, which = 1, main = "d", sub="", caption = "", ann=F)
-  title(xlab = "Angepasste Werte", ylab="Residuen")
-  #QQ-Plot
-  plot(mietelm3, which = 2, main = "d", sub="", caption = "", ann=F)
-  title(xlab = "Theoretische Quantile der Normalverteiung", ylab="Standardisierte Residuen")
-  #Cooks-Distance
-  plot(mietelm3, which = 4, main = "d", sub="", caption = "", ann=F)
-  title(xlab = " Beobachtungsnummer", ylab="Cook's Distance")
-  length(which(cooks.distance(mietelm1) > 4/3065))
-  #Leverage
-  plot(mietelm3, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
-  title(xlab = "Leverage Scores", ylab="Standardisierte Residuen")
-  
-#Abbildung 8: Diagnostikplots Modell 4
-  par( mfrow = c(2,2))
-  par(mar = c(5, 4, 2, 2) + 0.2)
-  #Residualplot
-  plot(mietelm4, which = 1, main = "d", sub="", caption = "", ann=F)
-  title(xlab = "Angepasste Werte", ylab="Residuen")
-  #QQ-Plot
-  plot(mietelm4, which = 2, main = "d", sub="", caption = "", ann=F)
-  title(xlab = "Theoretische Quantile der Normalverteiung", ylab="Standardisierte Residuen")
-  #Cooks-Distance
-  plot(mietelm4, which = 4, main = "d", sub="", caption = "", ann=F)
-  title(xlab = " Beobachtungsnummer", ylab="Cook's Distance")
-  #Leverage
-  plot(mietelm4, which=5, main = "d", sub="", caption = "", ann=F,extend.ylim.f=1.5)
-  title(xlab = "Leverage Scores", ylab="Standardisierte Residuen")
