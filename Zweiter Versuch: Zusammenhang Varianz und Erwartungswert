@@ -1,0 +1,107 @@
+
+# Zusammenhang zwsichen Varianz und Erwatungswert -------------------------
+
+
+# docvis ------------------------------------------------------------------
+library(MASS)
+qpo1 <- glm(docvis ~ female + age + hsat + handdum + handper
+            + hhinc + hhkids + educ + married + haupts + reals 
+            + fachhs + abitur +  univ + working + bluec + whitec 
+            + self + beamt  + public + addon, data = teil_ghz,
+            family = "quasipoisson")
+summary(qpo1)
+# Dispersionsparameter: 7.243139
+
+nb1 <- glm.nb(docvis ~ female + age + hsat + handdum + handper
+              + hhinc + hhkids + educ + married + haupts + reals 
+              + fachhs + abitur +  univ + working + bluec + whitec 
+              + self + beamt  + public + addon, data = teil_ghz)
+summary(nb1)
+# theta = 0.6229 
+# k = 1/psi = theta -> psi = 1/k = 1/theta
+# var = mu + mu^2 * psi
+
+nb2 <- glm.nb(docvis ~ female + hsat + handdum + handper
+              + hhinc + hhkids + addon, data = teil_ghz)
+summary(nb2)
+# theta = 0.6202
+
+
+length(seq(1, 3858, by = 19))
+m1 <- sapply(seq(1, 3858, by = 19)[-204], function(x){
+  mean(teil_ghz$docvis[x:(x+18)] ) })
+
+v1 <- sapply(seq(1, 3858, by = 19)[-204], function(x){
+  var(teil_ghz$docvis[x:(x+18)] ) })
+
+m1
+v1
+cbind(m1, v1)
+
+par(mfrow = c(1, 1))
+plot(m1, v1, xlab = "Arithmetische Mittel", 
+     ylab = "empirische Varianz", main = "docvis")
+abline(0, 7.243139, col = "purple", lty = "dashed", lwd = 2)
+x <- seq(0, 11, 0.01)
+curve(x + (x^2 * (1/0.6229)), add = TRUE, col = "blue", lwd = 2)
+abline(0, 1, lwd = 2)
+legend("topleft", legend = c("mu * phi", "mu + mu^2 * psi", "mu"),
+       col = c("purple", "blue", "black"), 
+       lty = c("dashed", "solid", "solid"),
+       lwd = 2)
+
+# mu + mu^2 * (1/theta) = mu * mu^2 * psi
+
+
+
+# hospvis -----------------------------------------------------------------
+
+library(MASS)
+library(pscl)
+qpo2 <- glm(hospvis ~ female + age + hsat + handdum + handper
+            + hhinc + hhkids + educ + married + haupts + reals 
+            + fachhs + abitur +  univ + working + bluec + whitec 
+            + self + beamt  + public + addon, data = teil_ghz,
+            family = "quasipoisson")
+summary(qpo2)
+# Dispersionsparameter: 2.645987
+
+nb2 <- glm.nb(hospvis ~ female + age + hsat + handdum + handper
+              + hhinc + hhkids + educ + married + haupts + reals 
+              + fachhs + abitur +  univ + working + bluec + whitec 
+              + self + beamt  + public + addon, data = teil_ghz)
+summary(nb2)
+# theta = 0.1570 
+# k = 1/psi = theta -> psi = 1/k = 1/theta
+# var = mu + mu^2 * psi
+
+# step(nb2)
+nb3 <- glm.nb(hospvis ~ hsat + handper + hhinc + educ + married + 
+         reals + fachhs + working + bluec + whitec + beamt, data = teil_ghz)
+summary(nb3)
+
+
+length(seq(1, 3858, by = 19))
+m2 <- sapply(seq(1, 3858, by = 19)[-204], function(x){
+  mean(teil_ghz$hospvis[x:(x+18)] ) })
+
+v2 <- sapply(seq(1, 3858, by = 19)[-204], function(x){
+  var(teil_ghz$hospvis[x:(x+18)] ) })
+
+m2
+v2
+cbind(m2, v2)
+
+plot(cbind(m2, v2), xlab = "Arithmetische Mittel", 
+     ylab = "empirische Varianz", main = "hospvis")
+abline(0, 2.645987, lty = "dashed", col = "purple", lwd = 2)
+x <- seq(0, 1, by = 0.01)
+curve(x + x^2 * (1/0.1570), add = TRUE, lwd = 2,
+      col = "blue")
+abline(0, 1, lwd = 2)
+legend("topleft", legend = c("mu * phi", "mu + mu^2 * psi", "mu"),
+       col = c("purple", "blue", "black"),
+       lty = c("dashed", "solid", "solid"),
+       lwd = 2)
+
+
